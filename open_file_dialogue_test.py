@@ -18,5 +18,7 @@ class FileDialogue:
         return os.path.getsize(self.file_path)
     def get_file_data(self):
         return self.file.readlines()
+    def get_file_ext(self):
+        return self.file_path[self.file_path.index('.'):]
     def close(self):
         self.file.close()
