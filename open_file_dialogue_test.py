@@ -4,16 +4,19 @@ import os
 import tkinter as tk
 from tkinter import filedialog
 
-root = tk.Tk()
-root.withdraw()
+class FileDialogue:
+    def __init__(self):
+        root = tk.Tk()
+        root.withdraw()
 
-file_path = filedialog.askopenfilename()
+        self.file_path = filedialog.askopenfilename()
 
-file = open(file_path,"r+b")
-
-#manipulate file here
-file_size = os.path.getsize(file_path)
-for i in range(file_size):
-    print(file.read(1))
-
-file.close()
+        self.file = open(self.file_path,"r+b")
+    def get_file_path(self):
+        return self.file_path
+    def get_file_length(self):
+        return os.path.getsize(self.file_path)
+    def get_file_data(self):
+        return self.file.readlines()
+    def close(self):
+        self.file.close()
