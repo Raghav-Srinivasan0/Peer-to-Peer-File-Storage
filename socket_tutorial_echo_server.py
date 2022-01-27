@@ -1,7 +1,7 @@
-from importlib.resources import path
+#from importlib.resources import path
 import socket
 
-from black import main
+#from black import main
 
 
 class Server:
@@ -36,7 +36,9 @@ class Server:
 
 if __name__ == "__main__":
     server = Server(
-        host="192.168.1.3", port=5000, path="D:/Destination_For_File-Transfer/"
+        # host="192.168.1.3", 
+        #port=5000, 
+        #path="D:/Destination_For_File-Transfer/"
     )
     while True:
         server.startserver()
