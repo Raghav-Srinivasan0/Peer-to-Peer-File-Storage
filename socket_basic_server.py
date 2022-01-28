@@ -15,17 +15,14 @@ class Server:
         self.PORT = port
         self.PATH = path
 
-    def startserver(self, filename, clientConn, clientAddr):
+    def startserver(self, filename):
         if filename == None:
             filename = str(input("What is the name of your file? "))
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-            if clientConn==None or clientAddr==None:
-                s.bind((self.HOST, self.PORT))
-                s.listen()
-                # conn is a socket object and addr is a pair with (hostaddr, port)
-                conn, addr = s.accept()
-            else:
-                conn, addr = clientConn, clientAddr
+            s.bind((self.HOST, self.PORT))
+            s.listen()
+            # conn is a socket object and addr is a pair with (hostaddr, port)
+            conn, addr = s.accept()
             with conn:
                 # print('Connected to: ' + addr)
                 type_of_file = str(conn.recv(1024)).replace("'", "").replace("b", "")
@@ -41,9 +38,9 @@ class Server:
 
 if __name__ == "__main__":
     server = Server(
-        # host="192.168.1.3", 
+        host="localhost", 
         #port=5000, 
         #path="D:/Destination_For_File-Transfer/"
     )
     while True:
-        server.startserver(None,None,None)
+        server.startserver(None)
