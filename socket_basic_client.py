@@ -1,3 +1,6 @@
+# IMPORTANT: Doesn't currently work as it cant connect to the server
+# the client that currently does work is the one that is titled socket_original_client.py
+
 from dataclasses import Field
 import socket
 import os
