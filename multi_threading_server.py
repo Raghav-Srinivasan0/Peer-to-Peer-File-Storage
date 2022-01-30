@@ -93,8 +93,6 @@ if __name__ == "__main__":
         except Exception as e:
             print(e)
             pass
-        with conn:
-            file_type = str(conn.recv(1024))[1:].replace("'", "")
         for i in range(args.NUMCONN):
-            main_function(conn, addr, file_type)
+            main_function(conn, addr, str(conn.recv(1024))[1:].replace("'", ""))
             print(all_processes)
