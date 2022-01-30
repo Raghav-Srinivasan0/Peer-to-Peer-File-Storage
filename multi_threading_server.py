@@ -56,8 +56,6 @@ def createandrun(filename, process_name, conn, addr, type_of_file):
             if not data:
                 break
             file.write(data)
-        print("Before SENDALL")
-        conn.sendall(bytes(filename))
     # Dont get here
     # print("leaving connection 2")
 
@@ -89,6 +87,7 @@ def main_function(conn, addr, type_of_file):
     print(process.name)
     # program gets here and then errors
     # print("end of run")
+    return name
 
 
 if __name__ == "__main__":
@@ -104,5 +103,6 @@ if __name__ == "__main__":
             pass
         for i in range(args.NUMCONN):
             recieved = str(conn.recv(1024))
-            main_function(conn, addr, recieved[1:].replace("'", ""))
+            filename = main_function(conn, addr, recieved[1:].replace("'", ""))
             # print(all_processes)
+        conn.sendall(bytes(filename))
