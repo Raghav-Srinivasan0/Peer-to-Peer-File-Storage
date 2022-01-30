@@ -36,6 +36,7 @@ for host in range(len(hosts)):
             if i % len(hosts) == host:
                 print(file_data[i])
                 s.sendall(file_data[i])
+        print("BEFORE DATA RECV")
         data = s.recv(1024)
         filenames.append(str(data)[1:].replace("'", ""))
 

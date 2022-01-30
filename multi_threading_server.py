@@ -56,6 +56,7 @@ def createandrun(filename, process_name, conn, addr, type_of_file):
             if not data:
                 break
             file.write(data)
+        print("Before SENDALL")
         conn.sendall(bytes(filename))
     # Dont get here
     # print("leaving connection 2")
