@@ -43,19 +43,23 @@ def createandrun(filename, process_name, conn, addr, type_of_file):
         print(type_of_file)
         if type_of_file == "":
             return
-        file = open(PATH + filename + type_of_file, "a+b")
+        file_str = PATH + filename + type_of_file
+        try:
+            file = open(file_str[: file_str.index("**")], "a+b")
+        except Exception as e:
+            file = open(file_str, "a+b")
         while True:
             data = conn.recv(1024)
             if not data:
                 break
             file.write(data)
     # Dont get here
-    #print("leaving connection 2")
+    # print("leaving connection 2")
 
 
 def main_function(conn, addr, type_of_file):
     # Close the connection to the client
-    #print("Beginning of Loop")
+    # print("Beginning of Loop")
     name = "".join(
         random.SystemRandom().choice(string.ascii_uppercase + string.digits)
         for _ in range(50)
@@ -79,7 +83,7 @@ def main_function(conn, addr, type_of_file):
     # for p in all_processes:
     #    print(p.name)
     # program gets here and then errors
-    #print("end of run")
+    # print("end of run")
 
 
 if __name__ == "__main__":
@@ -95,7 +99,5 @@ if __name__ == "__main__":
             pass
         for i in range(args.NUMCONN):
             recieved = str(conn.recv(1024))
-            main_function(
-                conn, addr, recieved[1 : ].replace("'", "")
-            )
-            #print(all_processes)
+            main_function(conn, addr, recieved[1:].replace("'", ""))
+            # print(all_processes)
