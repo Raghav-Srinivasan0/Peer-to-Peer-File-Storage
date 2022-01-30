@@ -94,5 +94,8 @@ if __name__ == "__main__":
             print(e)
             pass
         for i in range(args.NUMCONN):
-            main_function(conn, addr, str(conn.recv(1024))[1:].replace("'", ""))
+            recieved = str(conn.recv(1024))
+            main_function(
+                conn, addr, recieved[1 : recieved.index("**END**")].replace("'", "")
+            )
             print(all_processes)

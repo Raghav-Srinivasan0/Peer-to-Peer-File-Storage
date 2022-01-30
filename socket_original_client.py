@@ -28,7 +28,8 @@ os.remove(file_path)
 for host in range(len(hosts)):
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         s.connect((hosts[host], PORT))
-        s.sendall(bytes(file_ext.encode()))
+        a = file_ext + "**END**"
+        s.sendall(bytes(a.encode()))
         for i in range(len(file_data)):
             if i % len(hosts) == host:
                 print(file_data[i])
