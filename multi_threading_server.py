@@ -76,6 +76,8 @@ def main_function(conn, addr):
     )
     # process.start()
     all_processes.append(process)
+    process.start()
+    process.join()
     # for p in all_processes:
     #    print(p.name)
     # program gets here and then errors
@@ -86,15 +88,13 @@ if __name__ == "__main__":
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s.bind((HOST, PORT))
     s.listen(args.NUMCONN)
-    try:
-        conn, addr = s.accept()
-    except Exception as e:
-        print(e)
-        return
-    print(s)
-    for i in range(args.NUMCONN):
-        main_function(conn, addr)
-        print(all_processes)
-    for process in all_processes:
-        process.start()
-        process.join()
+    while True:
+        try:
+            conn, addr = s.accept()
+        except Exception as e:
+            print(e)
+            return
+        print(s)
+        for i in range(args.NUMCONN):
+            main_function(conn, addr)
+            print(all_processes)
