@@ -2,10 +2,8 @@
 
 # IMPORTANT: This code works for one run of the client code but the second time the client code runs it doesn't work
 
-import multiprocessing
 from multiprocessing import Process
 import socket
-import sys
 import string
 import random
 import argparse
@@ -42,8 +40,9 @@ def createandrun(filename, process_name, conn, addr):
     if filename == None:
         filename = str(input("What is the name of your file? "))
     with conn:
-        print("Connected to: " + addr)
         type_of_file = str(conn.recv(1024)).replace("'", "")[1:]
+        if type_of_file == "":
+            return
         file = open(PATH + filename + type_of_file, "a+b")
         while True:
             data = conn.recv(1024)
@@ -52,8 +51,6 @@ def createandrun(filename, process_name, conn, addr):
             file.write(data)
     # Dont get here
     print("leaving connection 2")
-    conn.close()
-    s.close()
 
 
 def main_function(conn, addr):
@@ -91,10 +88,10 @@ if __name__ == "__main__":
     while True:
         try:
             conn, addr = s.accept()
+            # print("Connected to: " + addr)
         except Exception as e:
             print(e)
             pass
-        print(s)
         for i in range(args.NUMCONN):
             main_function(conn, addr)
             print(all_processes)
