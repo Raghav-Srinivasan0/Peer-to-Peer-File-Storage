@@ -3,27 +3,44 @@
 # IMPORTANT: This code works for one run of the client code but the second time the client code runs it doesn't work
 
 import multiprocessing
+from multiprocessing import Process
 import socket
 import sys
 import string
 import random
 
-HOST = "localhost"
-PORT = 5000
+from black import main
+
+HOST = socket.gethostbyname(socket.gethostname())
+port_range = [5000, 5001, 5002, 5003, 5004, 5005, 5006, 5007, 5008]
 PATH = "D:/Destination_For_File-Transfer/"
 
 all_processes = []
 
-s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-# s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-s.bind((HOST, PORT))
+
+def find_port():
+    for port in port_range:
+        try:
+            s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            s.bind((HOST, port))
+            s.listen()
+            conn, addr = s.accept()
+            with conn:
+                data = conn.recv(1024)
+                if data == bytes("ready"):
+                    return port
+        except Exception:
+            pass
+    return None
 
 
-def createandrun(filename, process_name):
+def createandrun(filename, process_name, port):
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.bind((HOST, port))
+    conn, addr = s.accept()
     # server = Server(host=HOST, port=PORT, path=PATH)
     # server.startserver(name, c, a)
-    s.listen()
-    conn, addr = s.accept()
+    # not getting here
     if filename == None:
         filename = str(input("What is the name of your file? "))
     with conn:
@@ -35,33 +52,43 @@ def createandrun(filename, process_name):
             if not data:
                 break
             file.write(data)
+    # Dont get here
     for process in all_processes:
+        print("%s,%s", process.name, process_name)
         if process.name == process_name:
             process.kill()
     conn.close()
+    s.close()
 
 
-i = 1
-while True:
+def main_function(port):
     # Close the connection to the client
     print("Beginning of Loop")
     name = "".join(
         random.SystemRandom().choice(string.ascii_uppercase + string.digits)
         for _ in range(50)
     )
-    process = multiprocessing.Process(
+    process = Process(
         target=createandrun,
-        args=(
-            str(i),
-            name,
-        ),
+        args=(name, name, port),
         daemon=True,
         name=name,
     )
-    process.start()
+    # process.start()
     all_processes.append(process)
     for p in all_processes:
         print(p.name)
-    process.run()
+    # program gets here and then errors
+    process.start()
+    process.join()
     print("end of run")
-    i += 1
+
+
+if __name__ == "__main__":
+    while True:
+        port = find_port()
+        print(port)
+        if port == None:
+            pass
+        else:
+            main_function(port)
