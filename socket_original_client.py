@@ -2,13 +2,20 @@ from dataclasses import Field
 import socket
 import os
 from open_file_dialogue_test import FileDialogue
+import argparse
 
-HOST = "127.0.0.1"
-PORT = 5000
+my_parser = argparse.ArgumentParser(description="Start the client")
+
+my_parser.add_argument("PORT", metavar="port", type=int, help="The port")
+my_parser.add_argument("HOST", metavar="host", type=str, help="The host")
+
+args = my_parser.parse_args()
+
+HOST = args.HOST
+PORT = args.PORT
 
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
     s.connect((HOST, PORT))
-    s.sendall(bytes("ready"))
     f = FileDialogue()
     file_path = f.get_file_path()
     file_data = f.get_file_data()

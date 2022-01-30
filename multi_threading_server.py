@@ -8,35 +8,36 @@ import socket
 import sys
 import string
 import random
+import argparse
 
-from black import main
+# from black import main
+
+my_parser = argparse.ArgumentParser(description="Start the server")
+
+my_parser.add_argument(
+    "PORTMIN", metavar="port_minimum", type=int, help="The minimum port"
+)
+my_parser.add_argument(
+    "PORTMAX", metavar="port_maximum", type=int, help="The maximum port"
+)
+my_parser.add_argument("PATH", metavar="path", type=str, help="The destination path")
+
+args = my_parser.parse_args()
 
 HOST = socket.gethostbyname(socket.gethostname())
-port_range = [5000, 5001, 5002, 5003, 5004, 5005, 5006, 5007, 5008]
-PATH = "D:/Destination_For_File-Transfer/"
+port_range = [args.PORTMIN, args.PORTMAX]
+if args.PATH == "None":
+    PATH = "D:/Destination_For_File-Transfer/"
+else:
+    PATH = args.PATH
 
 all_processes = []
-
-
-def find_port():
-    for port in port_range:
-        try:
-            s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            s.bind((HOST, port))
-            s.listen()
-            conn, addr = s.accept()
-            with conn:
-                data = conn.recv(1024)
-                if data == bytes("ready"):
-                    return port
-        except Exception:
-            pass
-    return None
 
 
 def createandrun(filename, process_name, port):
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s.bind((HOST, port))
+    s.listen()
     conn, addr = s.accept()
     # server = Server(host=HOST, port=PORT, path=PATH)
     # server.startserver(name, c, a)
@@ -79,16 +80,12 @@ def main_function(port):
     for p in all_processes:
         print(p.name)
     # program gets here and then errors
-    process.start()
-    process.join()
     print("end of run")
 
 
 if __name__ == "__main__":
-    while True:
-        port = find_port()
-        print(port)
-        if port == None:
-            pass
-        else:
-            main_function(port)
+    for port in range(port_range[0], port_range[1]):
+        main_function(port)
+    for process in all_processes:
+        process.start()
+        process.join()
