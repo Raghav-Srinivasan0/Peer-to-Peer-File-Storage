@@ -24,6 +24,8 @@ print(file_ext)
 f.close()
 os.chdir("C:")
 os.remove(file_path)
+with open(file_path[: file_path.rindex(".")] + ".ins", "a+") as file:
+    file.write("PORT: {port}\nHOSTS: {hosts}".format(port=PORT, hosts=hosts))
 
 for host in range(len(hosts)):
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
