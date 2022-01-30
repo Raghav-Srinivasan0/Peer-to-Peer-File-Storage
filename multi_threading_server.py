@@ -33,14 +33,13 @@ else:
 all_processes = []
 
 
-def createandrun(filename, process_name, conn, addr):
+def createandrun(filename, process_name, conn, addr, type_of_file):
     # server = Server(host=HOST, port=PORT, path=PATH)
     # server.startserver(name, c, a)
     # not getting here
     if filename == None:
         filename = str(input("What is the name of your file? "))
     with conn:
-        type_of_file = str(conn.recv(1024))[1:].replace("'", "")
         print(type_of_file)
         if type_of_file == "":
             return
@@ -54,7 +53,7 @@ def createandrun(filename, process_name, conn, addr):
     print("leaving connection 2")
 
 
-def main_function(conn, addr):
+def main_function(conn, addr, type_of_file):
     # Close the connection to the client
     print("Beginning of Loop")
     name = "".join(
@@ -68,6 +67,7 @@ def main_function(conn, addr):
             name,
             conn,
             addr,
+            type_of_file,
         ),
         daemon=False,
         name=name,
@@ -89,10 +89,12 @@ if __name__ == "__main__":
     while True:
         try:
             conn, addr = s.accept()
+            with conn:
+                file_type = str(conn.recv(1024))[1:].replace("'", "")
             # print("Connected to: " + addr)
         except Exception as e:
             print(e)
             pass
         for i in range(args.NUMCONN):
-            main_function(conn, addr)
+            main_function(conn, addr, file_type)
             print(all_processes)
