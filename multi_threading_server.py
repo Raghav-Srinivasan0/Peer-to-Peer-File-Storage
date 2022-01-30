@@ -89,12 +89,12 @@ if __name__ == "__main__":
     while True:
         try:
             conn, addr = s.accept()
-            with conn:
-                file_type = str(conn.recv(1024))[1:].replace("'", "")
             # print("Connected to: " + addr)
         except Exception as e:
             print(e)
             pass
+        with conn:
+            file_type = str(conn.recv(1024))[1:].replace("'", "")
         for i in range(args.NUMCONN):
             main_function(conn, addr, file_type)
             print(all_processes)
