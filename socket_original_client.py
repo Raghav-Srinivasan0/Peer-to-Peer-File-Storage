@@ -24,8 +24,8 @@ print(file_ext)
 f.close()
 os.chdir("C:")
 os.remove(file_path)
-with open(file_path[: file_path.rindex(".")] + ".ins", "a+") as file:
-    file.write("PORT: {port}\nHOSTS: {hosts}".format(port=PORT, hosts=hosts))
+
+filenames = []
 
 for host in range(len(hosts)):
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
@@ -36,3 +36,13 @@ for host in range(len(hosts)):
             if i % len(hosts) == host:
                 print(file_data[i])
                 s.sendall(file_data[i])
+        data = s.recv(1024)
+        filenames.append(str(data)[1:].replace("'", ""))
+
+with open(file_path[: file_path.rindex(".")] + ".ins", "a+") as file:
+    # encrypt these files with cryptography library later
+    file.write(
+        "PORT: {port}\nHOSTS: {hosts}\nFILES: {files}".format(
+            port=PORT, hosts=hosts, files=filenames
+        )
+    )
