@@ -93,7 +93,7 @@ if __name__ == "__main__":
             conn, addr = s.accept()
         except Exception as e:
             print(e)
-            return
+            pass
         print(s)
         for i in range(args.NUMCONN):
             main_function(conn, addr)
