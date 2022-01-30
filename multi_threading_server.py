@@ -81,7 +81,7 @@ def main_function(conn, addr, type_of_file):
     process.start()
     process.join()
     # for p in all_processes:
-    #    print(p.name)
+    print(process.name)
     # program gets here and then errors
     # print("end of run")
 
