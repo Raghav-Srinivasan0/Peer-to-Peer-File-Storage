@@ -40,7 +40,7 @@ def createandrun(filename, process_name, conn, addr):
     if filename == None:
         filename = str(input("What is the name of your file? "))
     with conn:
-        type_of_file = str(conn.recv(1024)).replace("'", "")[1:]
+        type_of_file = str(conn.recv(1024))[1:].replace("'", "")
         print(type_of_file)
         if type_of_file == "":
             return
