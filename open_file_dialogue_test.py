@@ -21,7 +21,12 @@ class FileDialogue:
         return os.path.getsize(self.file_path)
 
     def get_file_data(self):
-        return self.file.readlines()
+        result = []
+        original = self.file.readlines()
+        for bytes in original:
+            for byte in list(bytes.decode()):
+                result.append(byte.encode())
+        return result
 
     def get_file_ext(self):
         return self.file_path[self.file_path.index(".") :]

@@ -32,4 +32,5 @@ for host in range(len(hosts)):
         s.sendall(bytes(file_ext.encode()))
         for i in range(len(file_data)):
             if i % len(hosts) == host:
+                print(file_data[i])
                 s.sendall(file_data[i])
