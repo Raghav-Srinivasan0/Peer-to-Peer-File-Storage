@@ -35,14 +35,7 @@ else:
 all_processes = []
 
 
-def createandrun(filename, process_name, socket):
-    s = socket
-    print(s)
-    try:
-        conn, addr = s.accept()
-    except Exception as e:
-        print(e)
-        return
+def createandrun(filename, process_name, conn, addr):
     # server = Server(host=HOST, port=PORT, path=PATH)
     # server.startserver(name, c, a)
     # not getting here
@@ -63,7 +56,7 @@ def createandrun(filename, process_name, socket):
     s.close()
 
 
-def main_function(socket):
+def main_function(conn, addr):
     # Close the connection to the client
     print("Beginning of Loop")
     name = "".join(
@@ -75,7 +68,8 @@ def main_function(socket):
         args=(
             name,
             name,
-            socket,
+            conn,
+            addr,
         ),
         daemon=False,
         name=name,
@@ -92,9 +86,14 @@ if __name__ == "__main__":
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s.bind((HOST, PORT))
     s.listen(args.NUMCONN)
+    try:
+        conn, addr = s.accept()
+    except Exception as e:
+        print(e)
+        return
     print(s)
     for i in range(args.NUMCONN):
-        main_function(s)
+        main_function(conn, addr)
         print(all_processes)
     for process in all_processes:
         process.start()
