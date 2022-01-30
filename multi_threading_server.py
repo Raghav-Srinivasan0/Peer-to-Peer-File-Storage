@@ -45,7 +45,7 @@ def createandrun(filename, process_name, conn, addr, type_of_file):
             return
         file_str = PATH + filename + type_of_file
         try:
-            file = open(file_str[: file_str.index("**")], "a+b")
+            file = open(file_str[: file_str.index("**END**")], "a+b")
         except Exception as e:
             file = open(file_str, "a+b")
         while True:
