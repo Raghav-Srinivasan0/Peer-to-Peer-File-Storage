@@ -46,7 +46,7 @@ def createandrun(filename, process_name, conn, addr, type_of_file):
         file_str = PATH + filename + type_of_file
         try:
             file = open(file_str[: file_str.index("**END**")], "a+b")
-            overflow = file_str[file_str.index("**END**") :]
+            overflow = file_str[file_str.index("**END**") + 7 :]
             file.write(overflow.encode())
         except Exception as e:
             file = open(file_str, "a+b")
