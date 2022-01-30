@@ -14,18 +14,19 @@ import argparse
 
 my_parser = argparse.ArgumentParser(description="Start the server")
 
+my_parser.add_argument("PORT", metavar="port", type=int, help="The port")
 my_parser.add_argument(
-    "PORTMIN", metavar="port_minimum", type=int, help="The minimum port"
-)
-my_parser.add_argument(
-    "PORTMAX", metavar="port_maximum", type=int, help="The maximum port"
+    "NUMCONN",
+    metavar="number_of_connections",
+    type=int,
+    help="The number of connections",
 )
 my_parser.add_argument("PATH", metavar="path", type=str, help="The destination path")
 
 args = my_parser.parse_args()
 
 HOST = socket.gethostbyname(socket.gethostname())
-port_range = [args.PORTMIN, args.PORTMAX]
+PORT = args.PORT
 if args.PATH == "None":
     PATH = "D:/Destination_For_File-Transfer/"
 else:
@@ -34,18 +35,21 @@ else:
 all_processes = []
 
 
-def createandrun(filename, process_name, port):
-    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    s.bind((HOST, port))
-    s.listen()
-    conn, addr = s.accept()
+def createandrun(filename, process_name, socket):
+    s = socket
+    print(s)
+    try:
+        conn, addr = s.accept()
+    except Exception as e:
+        print(e)
+        return
     # server = Server(host=HOST, port=PORT, path=PATH)
     # server.startserver(name, c, a)
     # not getting here
     if filename == None:
         filename = str(input("What is the name of your file? "))
     with conn:
-        # print('Connected to: ' + addr)
+        print("Connected to: " + addr)
         type_of_file = str(conn.recv(1024)).replace("'", "")[1:]
         file = open(PATH + filename + type_of_file, "a+b")
         while True:
@@ -54,15 +58,12 @@ def createandrun(filename, process_name, port):
                 break
             file.write(data)
     # Dont get here
-    for process in all_processes:
-        print("%s,%s", process.name, process_name)
-        if process.name == process_name:
-            process.kill()
+    print("leaving connection 2")
     conn.close()
     s.close()
 
 
-def main_function(port):
+def main_function(socket):
     # Close the connection to the client
     print("Beginning of Loop")
     name = "".join(
@@ -71,21 +72,30 @@ def main_function(port):
     )
     process = Process(
         target=createandrun,
-        args=(name, name, port),
-        daemon=True,
+        args=(
+            name,
+            name,
+            socket,
+        ),
+        daemon=False,
         name=name,
     )
     # process.start()
     all_processes.append(process)
-    for p in all_processes:
-        print(p.name)
+    # for p in all_processes:
+    #    print(p.name)
     # program gets here and then errors
     print("end of run")
 
 
 if __name__ == "__main__":
-    for port in range(port_range[0], port_range[1]):
-        main_function(port)
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.bind((HOST, PORT))
+    s.listen(args.NUMCONN)
+    print(s)
+    for i in range(args.NUMCONN):
+        main_function(s)
+        print(all_processes)
     for process in all_processes:
         process.start()
         process.join()
