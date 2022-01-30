@@ -41,6 +41,7 @@ def createandrun(filename, process_name, conn, addr):
         filename = str(input("What is the name of your file? "))
     with conn:
         type_of_file = str(conn.recv(1024)).replace("'", "")[1:]
+        print(type_of_file)
         if type_of_file == "":
             return
         file = open(PATH + filename + type_of_file, "a+b")
