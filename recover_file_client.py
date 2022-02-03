@@ -1,12 +1,19 @@
 import socket
+import sys
 from open_file_dialogue_test import FileDialogue
 
 # get instruction file
-f = FileDialogue()
-data = f.get_file_data()
-ext = f.get_file_ext()
-path = f.get_file_path()
-f.close()
+path = ""
+while path.find('.ins')==-1:
+    try:
+        f = FileDialogue()
+        data = f.get_file_data()
+        ext = f.get_file_ext()
+        path = f.get_file_path()
+        f.close()
+    except FileNotFoundError:
+        print('Pick a file!')
+        pass
 
 port = -1
 hosts = []
@@ -26,4 +33,9 @@ print(hosts)
 
 for host in range(len(hosts)):
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-        s.connect((hosts[host],port))
+        try:
+            s.connect((hosts[host],port))
+        except Exception as e:
+            print("Quitting because: " + e)
+            sys.exit(1)
+        
