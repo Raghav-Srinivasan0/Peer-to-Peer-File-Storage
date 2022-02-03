@@ -24,3 +24,6 @@ with open(path,'r+') as f:
 print(port)
 print(hosts)
 
+for host in range(len(hosts)):
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        s.connect((hosts[host],port))
