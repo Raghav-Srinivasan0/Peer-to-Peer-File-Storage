@@ -46,18 +46,26 @@ def createandrun(filename, conn, addr):
         filename = str(input("What is the name of your file? "))
     with conn:
         file_str = PATH + filename
-        try:
-            file = open(file_str[: file_str.index("**END**")] + '.data', "a+b")
-            overflow = file_str[file_str.index("**END**") + 7 :]
-            file.write(overflow.encode())
-        except Exception as e:
-            file = open(file_str + '.data', "a+b")
-        while True:
-            if not sending:
+        if not file_str.find('**SEND**') == -1:
+            sending = True
+        else:
+            sending = False
+        if not sending:
+            try:
+                file = open(file_str[: file_str.index("**END**")] + '.data', "a+b")
+                overflow = file_str[file_str.index("**END**") + 7 :]
+                file.write(overflow.encode())
+            except Exception as e:
+                file = open(file_str + '.data', "a+b")
+            while True:
                 data = conn.recv(1024)
                 if not data:
                     break
                 file.write(data)
+        else:
+            file = open(file_str[: file_str.index("**SEND**")] + file_str[file_str.index('**SEND**')+8:] + '.data', 'r+')
+            for line in file.readlines():
+                conn.sendall(line.encode())
     # Dont get here
     # print("leaving connection 2")
 
