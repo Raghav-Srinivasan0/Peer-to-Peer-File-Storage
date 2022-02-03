@@ -31,11 +31,34 @@ with open(path,'r+') as f:
 print(port)
 print(hosts)
 
+data_arr = []
+
 for host in range(len(hosts)):
+    arr = []
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         try:
             s.connect((hosts[host],port))
         except Exception as e:
             print("Quitting because: " + e)
             sys.exit(1)
+        try:
+            index_of_slash = path.rindex('/')
+        except Exception as e:
+            index_of_slash = path.rindex('\\')
+        file_name = path[index_of_slash+1:].replace(ext,'')
+        s.sendall(('**SEND**' + file_name).encode())
+        '''
+        s.bind((str(hosts[host]),port))
+        s.listen(1)
+        conn, addr = s.accept()
+        with conn:
+        '''
+        while True:
+            data = s.recv(1024)
+            if not data:
+                break
+            arr.append(data)
+    data_arr.append(arr)
+
+print(data_arr)
         
