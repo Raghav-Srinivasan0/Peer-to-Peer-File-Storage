@@ -24,7 +24,8 @@ my_parser.add_argument("PATH", metavar="path", type=str, help="The destination p
 
 args = my_parser.parse_args()
 
-HOST = socket.gethostbyname(socket.gethostname())
+HOST = 'localhost'
+#socket.gethostbyname(socket.gethostname())
 PORT = args.PORT
 if args.PATH == "None":
     PATH = "D:/Destination_For_File-Transfer/"
@@ -34,23 +35,21 @@ else:
 all_processes = []
 
 
-def createandrun(filename, process_name, conn, addr, type_of_file):
+def createandrun(filename, conn, addr):
     # server = Server(host=HOST, port=PORT, path=PATH)
     # server.startserver(name, c, a)
     # not getting here
+    #print(filename)
     if filename == None:
         filename = str(input("What is the name of your file? "))
     with conn:
-        print(type_of_file)
-        if type_of_file == "":
-            return
-        file_str = PATH + filename + type_of_file
+        file_str = PATH + filename
         try:
-            file = open(file_str[: file_str.index("**END**")], "a+b")
+            file = open(file_str[: file_str.index("**END**")] + '.data', "a+b")
             overflow = file_str[file_str.index("**END**") + 7 :]
             file.write(overflow.encode())
         except Exception as e:
-            file = open(file_str, "a+b")
+            file = open(file_str + '.data', "a+b")
         while True:
             data = conn.recv(1024)
             if not data:
@@ -60,21 +59,15 @@ def createandrun(filename, process_name, conn, addr, type_of_file):
     # print("leaving connection 2")
 
 
-def main_function(conn, addr, type_of_file):
+def main_function(conn, addr, name):
     # Close the connection to the client
     # print("Beginning of Loop")
-    name = "".join(
-        random.SystemRandom().choice(string.ascii_uppercase + string.digits)
-        for _ in range(50)
-    )
     process = Process(
         target=createandrun,
         args=(
             name,
-            name,
             conn,
             addr,
-            type_of_file,
         ),
         daemon=False,
         name=name,
@@ -84,10 +77,9 @@ def main_function(conn, addr, type_of_file):
     process.start()
     process.join()
     # for p in all_processes:
-    print(process.name)
+    #print(process.name)
     # program gets here and then errors
     # print("end of run")
-    return name
 
 
 if __name__ == "__main__":
@@ -99,10 +91,10 @@ if __name__ == "__main__":
             conn, addr = s.accept()
             # print("Connected to: " + addr)
         except Exception as e:
-            print(e)
+            #print(e)
             pass
+        recieved = str(conn.recv(1024))
         for i in range(args.NUMCONN):
-            recieved = str(conn.recv(1024))
+            #print(recieved)
             filename = main_function(conn, addr, recieved[1:].replace("'", ""))
             # print(all_processes)
-        conn.sendall(bytes(filename))
