@@ -34,6 +34,8 @@ else:
 
 all_processes = []
 
+sending = False
+
 
 def createandrun(filename, conn, addr):
     # server = Server(host=HOST, port=PORT, path=PATH)
@@ -51,10 +53,11 @@ def createandrun(filename, conn, addr):
         except Exception as e:
             file = open(file_str + '.data', "a+b")
         while True:
-            data = conn.recv(1024)
-            if not data:
-                break
-            file.write(data)
+            if not sending:
+                data = conn.recv(1024)
+                if not data:
+                    break
+                file.write(data)
     # Dont get here
     # print("leaving connection 2")
 
