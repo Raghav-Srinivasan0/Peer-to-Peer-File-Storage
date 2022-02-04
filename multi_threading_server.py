@@ -4,8 +4,6 @@
 
 from multiprocessing import Process
 import socket
-import string
-import random
 import argparse
 from unicodedata import name
 
@@ -24,8 +22,8 @@ my_parser.add_argument("PATH", metavar="path", type=str, help="The destination p
 
 args = my_parser.parse_args()
 
-HOST = 'localhost'
-#socket.gethostbyname(socket.gethostname())
+HOST = "localhost"
+# socket.gethostbyname(socket.gethostname())
 PORT = args.PORT
 if args.PATH == "None":
     PATH = "D:/Destination_For_File-Transfer/"
@@ -41,29 +39,34 @@ def createandrun(filename, conn, addr):
     # server = Server(host=HOST, port=PORT, path=PATH)
     # server.startserver(name, c, a)
     # not getting here
-    #print(filename)
+    # print(filename)
     if filename == None:
         filename = str(input("What is the name of your file? "))
     with conn:
         file_str = PATH + filename
-        if not file_str.find('**SEND**') == -1:
+        if not file_str.find("**SEND**") == -1:
             sending = True
         else:
             sending = False
         if not sending:
             try:
-                file = open(file_str[: file_str.index("**END**")] + '.data', "a+b")
+                file = open(file_str[: file_str.index("**END**")] + ".data", "a+b")
                 overflow = file_str[file_str.index("**END**") + 7 :]
                 file.write(overflow.encode())
             except Exception as e:
-                file = open(file_str + '.data', "a+b")
+                file = open(file_str + ".data", "a+b")
             while True:
                 data = conn.recv(1024)
                 if not data:
                     break
                 file.write(data)
         else:
-            file = open(file_str[: file_str.index("**SEND**")] + file_str[file_str.index('**SEND**')+8:] + '.data', 'r+')
+            file = open(
+                file_str[: file_str.index("**SEND**")]
+                + file_str[file_str.index("**SEND**") + 8 :]
+                + ".data",
+                "r+",
+            )
             for line in file.readlines():
                 conn.sendall(line.encode())
     # Dont get here
@@ -88,7 +91,7 @@ def main_function(conn, addr, name):
     process.start()
     process.join()
     # for p in all_processes:
-    #print(process.name)
+    # print(process.name)
     # program gets here and then errors
     # print("end of run")
 
@@ -102,10 +105,10 @@ if __name__ == "__main__":
             conn, addr = s.accept()
             # print("Connected to: " + addr)
         except Exception as e:
-            #print(e)
+            # print(e)
             pass
         recieved = str(conn.recv(1024))
         for i in range(args.NUMCONN):
-            #print(recieved)
+            # print(recieved)
             filename = main_function(conn, addr, recieved[1:].replace("'", ""))
             # print(all_processes)
