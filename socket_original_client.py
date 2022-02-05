@@ -11,8 +11,8 @@ my_parser.add_argument("PORT", metavar="port", type=int, help="The port")
 
 args = my_parser.parse_args()
 
-hosts = ['localhost']
-    #"192.168.1.3", "192.168.1.43"]
+hosts = ["localhost"]
+# "192.168.1.3", "192.168.1.43"]
 
 # HOST = args.HOST
 PORT = args.PORT
@@ -23,10 +23,10 @@ file_data = f.get_file_data()
 file_ext = f.get_file_ext()
 index_of_slash = 0
 try:
-    index_of_slash = file_path.rindex('/')
+    index_of_slash = file_path.rindex("/")
 except Exception as e:
-    index_of_slash = file_path.rindex('\\')
-file_name = file_path[index_of_slash+1:].replace(file_ext,'')
+    index_of_slash = file_path.rindex("\\")
+file_name = file_path[index_of_slash + 1 :].replace(file_ext, "")
 print(file_name)
 f.close()
 os.chdir("C:")
@@ -44,13 +44,9 @@ for host in range(len(hosts)):
                 print(file_data[i])
                 s.sendall(file_data[i])
         print("BEFORE DATA RECV")
-        #data = s.recv(1024)
-        #filenames.append(str(data)[1:].replace("'", ""))
+        # data = s.recv(1024)
+        # filenames.append(str(data)[1:].replace("'", ""))
 
 with open(file_path[: file_path.rindex(".")] + ".ins", "a+") as file:
     # encrypt these files with cryptography library later
-    file.write(
-        "PORT: {port}\nHOSTS: {hosts}".format(
-            port=PORT, hosts=hosts
-        )
-    )
+    file.write("PORT: {port}\nHOSTS: {hosts}".format(port=PORT, hosts=hosts))
