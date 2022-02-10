@@ -46,10 +46,10 @@ def createandrun(filename, conn, addr):
         filename = str(input("What is the name of your file? "))
     with conn:
         file_str = PATH + filename
-        if not file_str.find('**SEND**') == -1:
-            sending = True
-        else:
-            sending = False
+        #if not file_str.find('**SEND**') == -1:
+        #    sending = True
+        #else:
+        #    sending = False
         if not sending:
             try:
                 file = open(file_str[: file_str.index("**END**")] + '.data', "a+b")
