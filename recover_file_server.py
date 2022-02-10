@@ -3,8 +3,8 @@ import multiprocessing
 import socket
 
 PATH = "D:/Destination_For_File-Transfer/"
-HOST = 'localhost'
-PORT = 4999
+HOST = socket.gethostbyname(socket.gethostname())
+PORT = 5000
 NUMCONN = 5
 
 
@@ -30,7 +30,7 @@ while True:
     except Exception as e:
         pass
     for i in range(NUMCONN):
-        process = Process(target=main_function, args=(conn,))
+        process = Process(target=main_function, args=(conn,), daemon=False)
         process.start()
         process.join()
 

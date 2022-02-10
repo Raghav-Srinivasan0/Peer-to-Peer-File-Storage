@@ -38,7 +38,11 @@ for host in range(len(hosts)):
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         while True:
             try:
-                s.connect((hosts[host],port-1))
+                s.connect((
+                    #hosts[host],
+                    socket.gethostbyname(socket.gethostname()),
+                    port
+                    ))
                 break
             except Exception as e:
                 print("Quitting because: " + str(e))
