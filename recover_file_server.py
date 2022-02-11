@@ -1,17 +1,27 @@
+import argparse
 from multiprocessing import Process
-import multiprocessing
 import socket
 
-PATH = "D:/Destination_For_File-Transfer/"
+my_parser = argparse.ArgumentParser(description="Start the server")
+
+my_parser.add_argument("PORT", metavar="port", type=int, help="The port")
+my_parser.add_argument(
+    "NUMCONN",
+    metavar="number_of_connections",
+    type=int,
+    help="The number of connections",
+)
+my_parser.add_argument("PATH", metavar="path", type=str, help="The destination path")
+
+args = my_parser.parse_args()
+
+
+PATH = args.PATH
 HOST = socket.gethostbyname(socket.gethostname())
-PORT = 5000
-NUMCONN = 5
+PORT = args.PORT
+NUMCONN = args.NUMCONN
 
-
-s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-s.bind((HOST,PORT))
-print("listening ...")
-s.listen(NUMCONN)
+all_processes = []
 
 def main_function(conn):
     print("start of process")
@@ -24,13 +34,19 @@ def main_function(conn):
     except Exception as e:
         pass
 
-while True:
-    try:
-        conn, addr = s.accept()
-    except Exception as e:
-        pass
-    for i in range(NUMCONN):
-        process = Process(target=main_function, args=(conn,), daemon=False)
-        process.start()
-        process.join()
+if __name__ == "__main__":
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.bind((HOST,PORT))
+    print("listening ...")
+    s.listen(NUMCONN)
+    while True:
+        try:
+            conn, addr = s.accept()
+        except Exception as e:
+            pass
+        for i in range(NUMCONN):
+            process = Process(target=main_function, args=(conn,), daemon=False)
+            all_processes.append(process)
+            process.start()
+            process.join()
 
